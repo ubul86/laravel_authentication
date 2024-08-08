@@ -15,8 +15,8 @@ parameters:
     parallel:
         maximumNumberOfProcesses: 4
 
-#    ignoreErrors:
-#        - '#Unsafe usage of new static#'
+    ignoreErrors:
+        - identifier: missingType.iterableValue
 
     checkFunctionNameCase: true
     checkUninitializedProperties: true

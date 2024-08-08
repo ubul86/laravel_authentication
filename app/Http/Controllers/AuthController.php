@@ -4,20 +4,23 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Models\User;
+use App\Repositories\UserRepository;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Repositories\Contracts\UserRepositoryInterface;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
 class AuthController extends Controller
 {
-    protected $userRepository;
+    protected UserRepositoryInterface $userRepository;
 
     public function __construct(UserRepositoryInterface $userRepository)
     {
         $this->userRepository = $userRepository;
     }
 
-    public function register(RegisterRequest $request)
+    public function register(RegisterRequest $request): JsonResponse
     {
         $validated = $request->validated();
 
@@ -27,7 +30,7 @@ class AuthController extends Controller
         return response()->json(compact('user', 'token'), 201);
     }
 
-    public function login(LoginRequest $request)
+    public function login(LoginRequest $request): JsonResponse
     {
         $validated = $request->validated();
 
@@ -41,10 +44,10 @@ class AuthController extends Controller
         return $token;
     }
 
-    public function logout(Request $request)
+    public function logout(Request $request): JsonResponse
     {
         try {
-            $token = $request->header('Authorization');
+            $token = $request->header('Authorization', '');
 
             if (strpos($token, 'Bearer ') === 0) {
                 $token = substr($token, 7);
@@ -60,14 +63,10 @@ class AuthController extends Controller
         }
     }
 
-    public function getUser()
+    public function getUser(): JsonResponse
     {
         $user = $this->userRepository->getUser();
 
-        if (is_object($user)) {
-            return response()->json(compact('user'));
-        }
-
-        return $user;
+        return response()->json(compact('user'));
     }
 }

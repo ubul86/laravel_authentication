@@ -21,7 +21,7 @@ class UserRepository implements UserRepositoryInterface
         return $user;
     }
 
-    public function login(array $credentials)
+    public function login(array $credentials): mixed
     {
         try {
             if (! $token = JWTAuth::attempt($credentials)) {
@@ -34,7 +34,7 @@ class UserRepository implements UserRepositoryInterface
         return $token;
     }
 
-    public function getUser()
+    public function getUser(): mixed
     {
         try {
             if (! $user = JWTAuth::parseToken()->authenticate()) {
@@ -57,7 +57,7 @@ class UserRepository implements UserRepositoryInterface
         }
     }
 
-    public function getAuthenticatedUser()
+    public function getAuthenticatedUser(): void
     {
     }
 }
