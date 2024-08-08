@@ -106,11 +106,11 @@ Here are the available API endpoints:
 - POST /login: Authenticate a user and get a JWT token.
   - Request Body:
   ```json
-    {
-      "email": "johndoe@example.com",
-      "password": "password"
-    }
-    ```
+  {
+    "email": "johndoe@example.com",
+    "password": "password"
+  }
+  ```
   - Response: Returns a JWT token.
   
   
@@ -168,7 +168,6 @@ Unit tests are written using PHPUnit. To run tests, first configure SQLite in-me
 ```
 
 - Run the tests:
-
 ```bash
 php artisan test
 ```
