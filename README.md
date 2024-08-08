@@ -1,66 +1,179 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Laravel JWT Authentication API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A simple Laravel 10 application implementing JWT authentication. This project provides endpoints for user registration, login, and user data retrieval.
 
-## About Laravel
+## Minimum Requirements
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **PHP**: 8.1 or higher
+- **Composer**: 2.0 or higher
+- **MySQL**: 5.7 or higher
+- **Laravel**: 10.x
+- **Node.js** (optional, for Vue frontend integration)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Installation
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 1. Clone the Project
 
-## Learning Laravel
+Clone the repository to your local machine:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+```bash
+git clone https://github.com/yourusername/your-repository.git
+cd your-repository
+```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### 2. Install Dependencies
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Install PHP dependencies using Composer:
 
-## Laravel Sponsors
+```bash
+composer install
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 3. Copy Environment File
 
-### Premium Partners
+Copy the .env.sample file to .env:
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+```bash
+cp .env.sample .env
+```
 
-## Contributing
+### 4. Generate JWT Secret
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Generate the JWT secret key:
 
-## Code of Conduct
+```bash
+php artisan jwt:secret
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+This command will update the .env file with the JWT_SECRET key.
 
-## Security Vulnerabilities
+### 5. Configure the Database
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Create a new database for the project and set the database connection in the .env file. Update the following lines in your .env file:
 
-## License
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=your_database_name
+DB_USERNAME=your_database_username
+DB_PASSWORD=your_database_password
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### 6. Run Migrations
+
+Run the database migrations:
+
+```bash
+php artisan migrate
+```
+
+### 7. Seed the Database
+
+Seed the database with initial data:
+
+```bash
+php artisan db:seed
+```
+
+### 8. Start the Development Server
+
+Run the Laravel development server:
+
+```bash
+php artisan serve
+```
+
+The application should now be accessible at http://localhost:8000.
+
+## Endpoints
+
+Here are the available API endpoints:
+
+- POST /register: Register a new user.
+  - Request Body:
+  ```json
+  {
+    "name": "John Doe",
+    "email": "johndoe@example.com",
+    "password": "password",
+    "password_confirmation": "password"
+  }
+  ```
+  - Response: Returns the newly created user and JWT token.
+   
+
+- POST /login: Authenticate a user and get a JWT token.
+  - Request Body:
+  ```json
+    {
+      "email": "johndoe@example.com",
+      "password": "password"
+    }
+    ```
+  - Response: Returns a JWT token.
+  
+  
+- GET /user: Get the authenticated user’s details (requires JWT token).
+  - Request Header:
+  ```json
+  Authorization: Bearer {token}
+  ```
+  - Response: Returns the authenticated user’s details.
+
+- POST /logout: Log out the user and invalidate the JWT token.
+  - Request Header:
+   ```json
+    Authorization: Bearer {token}
+  ```
+  - Response: Returns a success message if the token was invalidated.
+
+
+## Testing and Analysis Tools
+
+### PHP CodeSniffer (PHPCS)
+
+PHPCS is used to check coding standards and style violations.
+
+```bash
+composer lint
+```
+
+### PHPStan
+
+PHPStan is used for static code analysis to find bugs and improve code quality.
+
+Run PHPStan:
+
+```bash
+composer analyse
+```
+
+Note: You might need to update your phpstan.neon configuration if you encounter issues or deprecations.
+
+## Running Tests
+
+### PHPUnit
+
+Unit tests are written using PHPUnit. To run tests, first configure SQLite in-memory database in phpunit.xml. This setup allows you to run tests without affecting your actual database. The database is created and discarded during each test run, ensuring a clean state.
+
+- Open phpunit.xml and set up the SQLite in-memory database configuration:
+```xml
+<phpunit bootstrap="vendor/autoload.php" colors="true">
+    <php>
+        <env name="DB_CONNECTION" value="sqlite"/>
+        <env name="DB_DATABASE" value=":memory:"/>
+    </php>
+</phpunit>
+```
+
+- Run the tests:
+
+```bash
+php artisan test
+```
+
+This will execute all tests in the tests directory and provide a summary of test results.
+
+
+
