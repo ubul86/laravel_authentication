@@ -59,6 +59,5 @@ class UserRepository implements UserRepositoryInterface
 
     public function getAuthenticatedUser()
     {
-
     }
 }

@@ -8,7 +8,6 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Http\Request;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-
 class AuthenticateWithJwt
 {
     public function handle(Request $request, Closure $next)
@@ -33,5 +32,4 @@ class AuthenticateWithJwt
             'message' => 'Unauthenticated.'
         ], 401));
     }
-
 }
