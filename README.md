@@ -10,7 +10,114 @@ A simple Laravel 10 application implementing JWT authentication. This project pr
 - **Laravel**: 10.x
 - **Node.js** (optional, for Vue frontend integration)
 
-## Installation
+## Installation With Docker
+
+First, need a fresh installation of Docker and Docker Compose
+
+### 1. Clone the Project
+
+Clone the repository to your local machine:
+
+```bash
+git clone https://github.com/yourusername/your-repository.git
+cd your-repository
+```
+ 
+### 2. Copy Environment File
+
+Copy the .env.sample file to .env:
+
+```bash
+cp .env.sample .env
+```
+
+### 3. Set Environment Variables
+In the .env file, you need to set the DB connections and some Host value.
+Here is an example configuration:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=mysql
+DB_PORT=3306
+DB_DATABASE=your_database_name
+DB_USERNAME=your_database_username
+DB_PASSWORD=your_database_password
+DB_ROOT_PASSWORD=your_database_root_password
+
+NGINX_PORT=8080
+PHPMYADMIN_PORT=45678
+```
+
+The DB_HOST needs to be mysql container name.
+
+### 4. Build The Containers
+
+Go to the project root directory, where is the docker-compose.yml file and add the following command:
+
+```bash
+docker-compose up -d --build
+```
+
+### 5. Install Dependencies:
+
+Install PHP dependencies using Composer:
+
+```bash
+docker exec -it {php_container_name} composer install
+```
+
+or
+```bash
+docker exec -it {php_container_name} bash
+composer install
+```
+
+### 6. Generate JWT Secret
+
+Generate the JWT secret key:
+
+```bash
+docker exec -it {php_container_name} php artisan jwt:secret
+```
+
+or
+
+```bash
+docker exec -it {php_container_name} bash
+php artisan jwt:secret
+```
+
+### 7. Run Migrations
+
+Run the database migrations:
+
+```bash
+docker exec -it {php_container_name} php artisan migrate
+```
+
+or
+
+```bash
+docker exec -it {php_container_name} bash
+php artisan migrate
+```
+
+### 8. Seed the Database
+
+Seed the database with initial data:
+
+```bash
+docker exec -it {php_container_name} php artisan db:seed
+```
+
+or
+
+```bash
+docker exec -it {php_container_name} bash
+php artisan db:seed
+```
+
+## Installation Without Docker
 
 ### 1. Clone the Project
 
@@ -49,7 +156,7 @@ This command will update the .env file with the JWT_SECRET key.
 
 ### 5. Configure the Database
 
-Create a new database for the project and set the database connection in the .env file. Update the following lines in your .env file:
+Create a new database for the project and set the database connection in the .env file. Update the following lines in your .env file. There is an example setting:
 
 ```env
 DB_CONNECTION=mysql
@@ -173,6 +280,26 @@ php artisan test
 ```
 
 This will execute all tests in the tests directory and provide a summary of test results.
+
+## Docker Installation
+
+### Linux
+
+- Ubuntu: https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-on-ubuntu-20-04
+- For Linux Mint: https://computingforgeeks.com/install-docker-and-docker-compose-on-linux-mint-19/
+
+### Windows
+
+- https://docs.docker.com/desktop/windows/install/
+
+## Docker Compose Installation
+
+### Linux
+
+https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-20-04
+
+### Windows
+- Docker automatically installs Docker Compose.
 
 
 
