@@ -20,11 +20,14 @@ class UserRepositoryTest extends TestCase
     protected UserRegistrationInterface $userRepository;
     protected UserAuthenticationInterface $authRepository;
 
+    protected UserRegistrationInterface $userRegistrationRepository;
+
     protected function setUp(): void
     {
         parent::setUp();
         $this->userRepository = new UserRepository();
         $this->authRepository = new AuthRepository();
+        $this->userRegistrationRepository = new UserRepository();
     }
 
     /** @test */
@@ -36,7 +39,7 @@ class UserRepositoryTest extends TestCase
             'password' => 'password123'
         ];
 
-        $user = $this->userRepository->register($data);
+        $user = $this->userRegistrationRepository->register($data);
 
         $this->assertInstanceOf(User::class, $user);
         $this->assertTrue(Hash::check('password123', $user->password));

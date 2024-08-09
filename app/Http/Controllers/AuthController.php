@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Repositories\Contracts\UserAuthenticationInterface;
+use App\Repositories\Contracts\UserRegistrationInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Repositories\Contracts\UserRepositoryInterface;
@@ -13,10 +14,14 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 class AuthController extends Controller
 {
     protected UserRepositoryInterface $userRepository;
+
+    protected UserRegistrationInterface $userRegistration;
+
     protected UserAuthenticationInterface $authRepository;
 
-    public function __construct(UserRepositoryInterface $userRepository, UserAuthenticationInterface $authRepository)
+    public function __construct(UserRegistrationInterface $userRegistration, UserRepositoryInterface $userRepository, UserAuthenticationInterface $authRepository)
     {
+        $this->userRegistration = $userRegistration;
         $this->userRepository = $userRepository;
         $this->authRepository = $authRepository;
     }
@@ -25,7 +30,7 @@ class AuthController extends Controller
     {
         $validated = $request->validated();
 
-        $user = $this->userRepository->register($request->only('name', 'email', 'password'));
+        $user = $this->userRegistration->register($request->only('name', 'email', 'password'));
         $token = $this->authRepository->login($request->only('email', 'password'));
 
         return response()->json(compact('user', 'token'), 201);

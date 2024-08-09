@@ -2,7 +2,7 @@
 
 namespace App\Repositories\Contracts;
 
-interface UserRepositoryInterface extends UserRegistrationInterface, UserAuthenticationInterface
+interface UserRepositoryInterface
 {
     public function getUser(): mixed;
 }

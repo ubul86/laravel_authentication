@@ -4,12 +4,13 @@ namespace App\Repositories;
 
 use App\Models\User;
 use App\Repositories\Contracts\UserRegistrationInterface;
+use App\Repositories\Contracts\UserRepositoryInterface;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Illuminate\Http\Response;
 
-class UserRepository implements UserRegistrationInterface
+class UserRepository implements UserRegistrationInterface, UserRepositoryInterface
 {
     public function register(array $data): User
     {
