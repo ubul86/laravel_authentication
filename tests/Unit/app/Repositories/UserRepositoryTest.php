@@ -7,7 +7,6 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Facades\JWTAuth;
-use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Repositories\UserRepository;
 use App\Repositories\Contracts\UserRepositoryInterface;
 
@@ -68,7 +67,6 @@ class UserRepositoryTest extends TestCase
         JWTAuth::shouldReceive('attempt')->with($credentials)->andReturn(false);
         $response = $this->userRepository->login($credentials);
 
-        // Check that the response is a JsonResponse instance
         $this->assertInstanceOf(\Illuminate\Http\JsonResponse::class, $response);
         $this->assertEquals(400, $response->status());
 
