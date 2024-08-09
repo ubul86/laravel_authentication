@@ -2,6 +2,9 @@
 
 namespace Tests\Unit;
 
+use App\Repositories\AuthRepository;
+use App\Repositories\Contracts\UserAuthenticationInterface;
+use App\Repositories\Contracts\UserRegistrationInterface;
 use Tests\TestCase;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -14,12 +17,14 @@ class UserRepositoryTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected UserRepositoryInterface $userRepository;
+    protected UserRegistrationInterface $userRepository;
+    protected UserAuthenticationInterface $authRepository;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->userRepository = new UserRepository();
+        $this->authRepository = new AuthRepository();
     }
 
     /** @test */
@@ -51,7 +56,7 @@ class UserRepositoryTest extends TestCase
         ];
 
         JWTAuth::shouldReceive('attempt')->with($credentials)->andReturn('fake-jwt-token');
-        $token = $this->userRepository->login($credentials);
+        $token = $this->authRepository->login($credentials);
 
         $this->assertEquals('fake-jwt-token', $token);
     }
@@ -65,7 +70,7 @@ class UserRepositoryTest extends TestCase
         ];
 
         JWTAuth::shouldReceive('attempt')->with($credentials)->andReturn(false);
-        $response = $this->userRepository->login($credentials);
+        $response = $this->authRepository->login($credentials);
 
         $this->assertInstanceOf(\Illuminate\Http\JsonResponse::class, $response);
         $this->assertEquals(400, $response->status());
@@ -98,7 +103,7 @@ class UserRepositoryTest extends TestCase
         JWTAuth::shouldReceive('setToken')->with($token)->andReturnSelf();
         JWTAuth::shouldReceive('invalidate')->andReturn(true);
 
-        $result = $this->userRepository->logout($token);
+        $result = $this->authRepository->logout($token);
 
         $this->assertTrue($result);
     }

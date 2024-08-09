@@ -4,8 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
-use App\Models\User;
-use App\Repositories\UserRepository;
+use App\Repositories\Contracts\UserAuthenticationInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Repositories\Contracts\UserRepositoryInterface;
@@ -14,10 +13,12 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 class AuthController extends Controller
 {
     protected UserRepositoryInterface $userRepository;
+    protected UserAuthenticationInterface $authRepository;
 
-    public function __construct(UserRepositoryInterface $userRepository)
+    public function __construct(UserRepositoryInterface $userRepository, UserAuthenticationInterface $authRepository)
     {
         $this->userRepository = $userRepository;
+        $this->authRepository = $authRepository;
     }
 
     public function register(RegisterRequest $request): JsonResponse
@@ -25,7 +26,7 @@ class AuthController extends Controller
         $validated = $request->validated();
 
         $user = $this->userRepository->register($request->only('name', 'email', 'password'));
-        $token = $this->userRepository->login($request->only('email', 'password'));
+        $token = $this->authRepository->login($request->only('email', 'password'));
 
         return response()->json(compact('user', 'token'), 201);
     }
@@ -35,7 +36,7 @@ class AuthController extends Controller
         $validated = $request->validated();
 
         $credentials = $request->only('email', 'password');
-        $token = $this->userRepository->login($credentials);
+        $token = $this->authRepository->login($credentials);
 
         if (is_string($token)) {
             return response()->json(compact('token'));
@@ -53,7 +54,7 @@ class AuthController extends Controller
                 $token = substr($token, 7);
             }
 
-            if ($this->userRepository->logout($token)) {
+            if ($this->authRepository->logout($token)) {
                 return response()->json(['message' => 'Successfully logged out'], 200);
             }
 

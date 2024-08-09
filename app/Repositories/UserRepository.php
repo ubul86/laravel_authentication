@@ -3,12 +3,13 @@
 namespace App\Repositories;
 
 use App\Models\User;
+use App\Repositories\Contracts\UserRegistrationInterface;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
-use App\Repositories\Contracts\UserRepositoryInterface;
+use Illuminate\Http\Response;
 
-class UserRepository implements UserRepositoryInterface
+class UserRepository implements UserRegistrationInterface
 {
     public function register(array $data): User
     {
@@ -21,43 +22,16 @@ class UserRepository implements UserRepositoryInterface
         return $user;
     }
 
-    public function login(array $credentials): mixed
-    {
-        try {
-            if (! $token = JWTAuth::attempt($credentials)) {
-                return response()->json(['error' => 'invalid_credentials'], 400);
-            }
-        } catch (JWTException $e) {
-            return response()->json(['error' => 'could_not_create_token'], 500);
-        }
-
-        return $token;
-    }
-
     public function getUser(): mixed
     {
         try {
             if (! $user = JWTAuth::parseToken()->authenticate()) {
-                return response()->json(['user_not_found'], 404);
+                return response()->json(['user_not_found'], Response::HTTP_NOT_FOUND);
             }
         } catch (JWTException $e) {
-            return response()->json(['error' => $e->getMessage()], $e->getStatusCode());
+            return response()->json(['error' => $e->getMessage()], Response::HTTP_UNAUTHORIZED);
         }
 
         return $user;
-    }
-
-    public function logout(string $token): bool
-    {
-        try {
-            JWTAuth::setToken($token)->invalidate();
-            return true;
-        } catch (JWTException $e) {
-            return false;
-        }
-    }
-
-    public function getAuthenticatedUser(): void
-    {
     }
 }
